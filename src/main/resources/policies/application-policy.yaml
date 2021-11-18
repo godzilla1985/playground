@@ -1,0 +1,20 @@
+mail:
+  hostname: host@mail.com
+  port: 9000
+  from: mailer@mail.com
+  credentials:
+    - authMethod: basic1
+      username: test1
+      password: test1
+    - authMethod: basic2
+      username: test2
+      password: test2
+  values:
+    one:
+      authMethod: basic1
+      username: test1
+      password: test1
+    two:
+      authMethod: basic1
+      username: test1
+      password: test1

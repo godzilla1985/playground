@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @Configuration
-@PropertySources({@PropertySource(value = "classpath:policies/application-policy.yaml", factory = YamlPropertySourceFactory.class)})
+@PropertySources({@PropertySource(value = "classpath:application-policy.yaml", factory = YamlPropertySourceFactory.class)})
 @ConfigurationProperties(prefix = "mail")
 @Data
 public class ConfigurationMailProperties {

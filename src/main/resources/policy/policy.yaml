@@ -1,0 +1,69 @@
+fsm:
+  policies:
+    - gitProjectKey: TD
+      gitRepo:
+      defaultFlow:
+        - architect
+        - security
+      skipApprovalUser: PRDZZ142
+      triggerBy:
+        destBranch:
+          - dev
+          - master
+      onFinish:
+        dev:
+          merge: true
+        master:
+          merge: false
+      flowByConditions:
+        dev:
+          - paths:
+              - quota.yaml
+            newFileOnly: true
+            approvers:
+              - devops
+        master:
+          - paths:
+              - environments.yaml
+            newFileOnly: true
+            approvers:
+              - architect
+          - paths:
+              - roles.yaml
+            newFileOnly: true
+            approvers:
+              - security
+          - paths:
+              - quota.yaml
+            newFileOnly: true
+            approvers:
+              - devops
+    - gitProjectKey: TGIT2
+      gitRepo:
+      defaultFlow:
+        - architect
+        - security
+      skipApprovalUser: PRD10042AD05
+      triggerBy:
+        destBranch:
+          - master
+        envType:
+          - preprod
+          - prod
+      onFinish:
+        master:
+          notifySuccess: true
+    - gitProjectKey: MWSOAUT
+      gitRepo:
+      defaultFlow:
+        - architect
+        - security
+      skipApprovalUser: PRDZZ142
+      triggerBy:
+        destBranch:
+          - master
+      onFinish:
+        master:
+          merge: true
+          notifySuccess: true
+          triggerUrl: https://jenkins.resource.bank/job/T52059-GitOcp/job/tests/job/tom-env-test2/job/games-jobs/job/test/

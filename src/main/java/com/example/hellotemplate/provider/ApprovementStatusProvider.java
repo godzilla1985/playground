@@ -11,5 +11,6 @@ import java.util.List;
 public class ApprovementStatusProvider implements ValidationProvider {
 
     private List<ParticipantDto> participants;
+    private String toBranch;
 
 }

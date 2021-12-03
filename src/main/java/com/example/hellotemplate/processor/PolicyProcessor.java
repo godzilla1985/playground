@@ -3,36 +3,47 @@ package com.example.hellotemplate.processor;
 import com.example.hellotemplate.dto.ParticipantDto;
 import com.example.hellotemplate.dto.PullRequestDto;
 import com.example.hellotemplate.provider.ApproversDescriptionProvider;
+import com.example.hellotemplate.provider.PolicyProvider;
 import com.example.hellotemplate.provider.ValidationProvider;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component("policy")
+@Slf4j
+public class PolicyProcessor implements ValidationProcessor {
 
-@Getter
-public class PolicyProcessor extends ValidationProcessor {
+    private final ValidationProcessor nextProcessor;
 
-    public PolicyProcessor(ValidationProcessor nextProcessor) {
-        super(nextProcessor);
+    public PolicyProcessor(@Qualifier("description") ValidationProcessor nextProcessor) {
+        this.nextProcessor = nextProcessor;
     }
 
     @Override
     public boolean isValidated(ValidationProvider provider) {
-        if (provider instanceof PullRequestDto) {
-            String projectKey = ((PullRequestDto) provider).getProjectKey();
-            String repoName = ((PullRequestDto) provider).getRepoName();
+        log.info("In {} into the method {}", this.getClass().getName(), "isValidated");
+        if (provider instanceof PolicyProvider) {
+            PolicyProvider policyProvider = (PolicyProvider) provider;
+            String projectKey = policyProvider.getPullRequestDto().getProjectKey();
+            String repoName = policyProvider.getPullRequestDto().getRepoName();
             if (isMatchingForPolicy(projectKey, repoName)) {
-                ApproversDescriptionProvider approversDescriptionProvider = (ApproversDescriptionProvider) getValidationProvider(provider);
-                return getNextProcessor().isValidated(approversDescriptionProvider);
+                ApproversDescriptionProvider approversDescriptionProvider = getValidationProvider(provider);
+                return nextProcessor.isValidated(approversDescriptionProvider);
             }
         }
         return false;
     }
 
-    private ValidationProvider getValidationProvider(ValidationProvider provider) {
-        String toBranch = ((PullRequestDto) provider).getToBranch();
-        String description = ((PullRequestDto) provider).getDescription();
-        List<ParticipantDto> participants = ((PullRequestDto) provider).getApprovers();
+    private ApproversDescriptionProvider getValidationProvider(ValidationProvider provider) {
+        PullRequestDto pullRequestDto = ((PolicyProvider) provider).getPullRequestDto();
+        String toBranch =pullRequestDto.getToBranch();
+        String description = pullRequestDto.getDescription();
+        List<ParticipantDto> participants = pullRequestDto.getApprovers();
         return new ApproversDescriptionProvider(toBranch, description, participants);
     }
 

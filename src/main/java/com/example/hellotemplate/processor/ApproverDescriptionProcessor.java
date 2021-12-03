@@ -3,25 +3,30 @@ package com.example.hellotemplate.processor;
 import com.example.hellotemplate.provider.ApproversBranchProvider;
 import com.example.hellotemplate.provider.ApproversDescriptionProvider;
 import com.example.hellotemplate.provider.ValidationProvider;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 
-@Getter
-public class ApproversDescriptionProcessor extends ValidationProcessor {
+@Component("description")
+@Slf4j
+public class ApproverDescriptionProcessor implements ValidationProcessor {
 
-    public ApproversDescriptionProcessor(ValidationProcessor nextProcessor) {
-        super(nextProcessor);
-    }
+    @Autowired
+    @Qualifier("branch")
+    private ValidationProcessor nextProcessor;
 
 
     @Override
     public boolean isValidated(ValidationProvider provider) {
+        log.info("In {} into the method {}", this.getClass().getName(), "isValidated");
         if (provider instanceof ApproversDescriptionProvider) {
             ApproversDescriptionProvider approversProvider = (ApproversDescriptionProvider) provider;
             if (isHaveRolesYaml(approversProvider)) {
                 ApproversBranchProvider approversBranchProvider =
                         new ApproversBranchProvider(approversProvider.getToBranch(), approversProvider.getParticipants());
-                return getNextProcessor().isValidated(approversBranchProvider);
+                return nextProcessor.isValidated(approversBranchProvider);
             }
         }
         return true;

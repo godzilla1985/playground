@@ -5,10 +5,7 @@ import com.example.hellotemplate.dto.PullRequestDto;
 import com.example.hellotemplate.provider.ApproversDescriptionProvider;
 import com.example.hellotemplate.provider.PolicyProvider;
 import com.example.hellotemplate.provider.ValidationProvider;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +38,7 @@ public class PolicyProcessor implements ValidationProcessor {
 
     private ApproversDescriptionProvider getValidationProvider(ValidationProvider provider) {
         PullRequestDto pullRequestDto = ((PolicyProvider) provider).getPullRequestDto();
-        String toBranch =pullRequestDto.getToBranch();
+        String toBranch = pullRequestDto.getToBranch();
         String description = pullRequestDto.getDescription();
         List<ParticipantDto> participants = pullRequestDto.getApprovers();
         return new ApproversDescriptionProvider(toBranch, description, participants);

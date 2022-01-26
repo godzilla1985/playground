@@ -43,4 +43,13 @@ public class PullRequestFlowProcessingTest {
         Assertions.assertTrue(actualResult);
     }
 
+    @Test
+    public void ValidationProcessorWithourRolesYamlAndWithoutApprovedPrticipantsTest(){
+        PullRequestDto pullRequestDto = TestUtil.getPullRequestWithourRolesYamlAndWithoutApprovedParticipants();
+        log.info("Pull request dto object : "+pullRequestDto);
+        PolicyProvider policyProvider = new PolicyProvider(pullRequestDto);
+        boolean actualResult = pullRequestProcessorService.processPullrequest(policyProvider);
+        Assertions.assertTrue(actualResult);
+    }
+
 }

@@ -8,6 +8,15 @@ import java.util.List;
 
 public class TestUtil {
 
+
+    static PullRequestDto getPullRequestWithourRolesYamlAndWithoutApprovedParticipants(){
+        PullRequestDto pullRequestDto = getPullRequestDtoWithRolesYamlAndTwoApprovedParticipants();
+        List<ParticipantDto> participants = getListOfUnapprovedParticipants();
+        pullRequestDto.setApprovers(participants);
+        pullRequestDto.setDescription("Changed the environments.yaml file");
+        return pullRequestDto;
+    }
+
     static PullRequestDto getPullRequestDtoWithRolesYamlAndTwoApprovedParticipants(){
         PullRequestDto pullRequestDto = new PullRequestDto();
         pullRequestDto.setRepoName("enrich");
@@ -16,7 +25,7 @@ public class TestUtil {
         pullRequestDto.setFromBranch("dev");
         pullRequestDto.setToBranch("master");
         pullRequestDto.setDescription("Changed the file roles.yaml");
-        List<ParticipantDto> participants = getListOfParticipants();
+        List<ParticipantDto> participants = getListOfApprovedParticipants();
         pullRequestDto.setApprovers(participants);
         return pullRequestDto;
     }
@@ -36,13 +45,23 @@ public class TestUtil {
         return pullRequestDto;
     }
 
-    static List<ParticipantDto> getListOfParticipants(){
+    static List<ParticipantDto> getListOfApprovedParticipants(){
         ParticipantDto participantDtoFirst = new ParticipantDto();
         participantDtoFirst.setUser("Eli");
         participantDtoFirst.setApproved(true);
         ParticipantDto participantDtoSecond = new ParticipantDto();
         participantDtoSecond.setUser("Maya");
         participantDtoSecond.setApproved(true);
+        return Arrays.asList(participantDtoFirst,participantDtoSecond);
+    }
+
+    static List<ParticipantDto> getListOfUnapprovedParticipants(){
+        ParticipantDto participantDtoFirst = new ParticipantDto();
+        participantDtoFirst.setUser("Eli");
+        participantDtoFirst.setApproved(false);
+        ParticipantDto participantDtoSecond = new ParticipantDto();
+        participantDtoSecond.setUser("Maya");
+        participantDtoSecond.setApproved(false);
         return Arrays.asList(participantDtoFirst,participantDtoSecond);
     }
 
